@@ -1,8 +1,8 @@
-FROM nvcr.io/nvidia/pytorch:24.02-py3
+FROM nvcr.io/nvidia/pytorch:24.03-py3
 
-ARG UID=1000
-ARG GID=1000
-ARG USERNAME=vscode
+ENV UID=1000
+ENV GID=1000
+ARG USERNAME=pycharm
 
 ENV DEBIAN_FRONTEND=noninteractive \
     LANG=ja_JP.UTF-8 \
@@ -34,7 +34,7 @@ RUN \
     eza \
     shellcheck \
     tmux \
-    zsh \
+    fish \
     sudo \
     && ln -s "$(which batcat)" /usr/local/bin/bat \
     && ln -s "$(which fdfind)" /usr/local/bin/fd \

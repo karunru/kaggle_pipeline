@@ -1,4 +1,4 @@
-set shell := ["zsh", "-cu"]
+set shell := ["fish", "-c"]
 
 # format by ruff
 fmt:
@@ -21,9 +21,7 @@ all: fmt lint type-check test
 
 # start up all the services in detached mode
 compose-up:
-	export UID=$(id -u)
-	export GID=$(id -g)
-	docker compose up -d
+	set -gx UID (id -u); set -gx GID (id -g); docker compose up -d
 
 # compose down
 compose-down:
