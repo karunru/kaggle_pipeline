@@ -1,7 +1,7 @@
 FROM nvcr.io/nvidia/pytorch:24.03-py3
 
-ENV UID=1000
-ENV GID=1000
+ARG UID=1000
+ARG GID=1000
 ARG USERNAME=pycharm
 
 ENV DEBIAN_FRONTEND=noninteractive \
