@@ -12,7 +12,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
     VIRTUAL_ENV=/usr/
 
-ENV  UV_VERSION=0.1.31
+ENV  UV_VERSION=0.4.0
 
 WORKDIR /workspace
 
@@ -50,9 +50,7 @@ RUN \
     && useradd -l --uid ${UID} --gid ${GID} -m ${USERNAME} \
     && echo "${USERNAME} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${USERNAME}
 
-RUN --mount=type=bind,source=requirements.txt,target=requirements.txt \
-    --mount=type=bind,source=requirements-dev.txt,target=requirements-dev.txt \
-    uv pip install -r requirements.txt \
-    && uv pip install -r requirements-dev.txt
+ADD pyproject.toml /workspace/pyproject.toml
+RUN uv sync
 
 USER ${USERNAME}
