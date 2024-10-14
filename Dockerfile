@@ -12,7 +12,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
     VIRTUAL_ENV=/usr/
 
-ENV  UV_VERSION=0.1.31
+ENV  UV_VERSION=0.4.0
 
 WORKDIR /workspace
 
@@ -37,22 +37,28 @@ RUN \
     fish \
     sudo \
     && ln -s "$(which batcat)" /usr/local/bin/bat \
-    && ln -s "$(which fdfind)" /usr/local/bin/fd \
+    && ln -s "$(which fdfind)" /usr/local/bin/fd
+
+RUN \
     # just command runner
-    && curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin \
+    curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+
+RUN \
     # hadolint
-    && curl -fSL "https://github.com/hadolint/hadolint/releases/download/$(curl -s https://api.github.com/repos/hadolint/hadolint/releases/latest | jq -r '.tag_name')/hadolint-Linux-x86_64" -o /usr/local/bin/hadolint \
-    && chmod +x /usr/local/bin/hadolint \
+    curl -fSL "https://github.com/hadolint/hadolint/releases/download/$(curl -s https://api.github.com/repos/hadolint/hadolint/releases/latest | jq -r '.tag_name')/hadolint-Linux-x86_64" -o /usr/local/bin/hadolint \
+    && chmod +x /usr/local/bin/hadolint
+
+RUN \
     # uv
-    && pip install --no-cache-dir uv==${UV_VERSION} \
+    pip install --no-cache-dir uv==${UV_VERSION}
+
+RUN \
     # add user
-    && groupadd --gid ${GID} ${USERNAME} \
+    groupadd --gid ${GID} ${USERNAME} \
     && useradd -l --uid ${UID} --gid ${GID} -m ${USERNAME} \
     && echo "${USERNAME} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${USERNAME}
 
-RUN --mount=type=bind,source=requirements.txt,target=requirements.txt \
-    --mount=type=bind,source=requirements-dev.txt,target=requirements-dev.txt \
-    uv pip install -r requirements.txt \
-    && uv pip install -r requirements-dev.txt
+RUN --mount=type=bind,source=pyproject.toml,target=pyproject.toml  \
+    uv sync
 
 USER ${USERNAME}

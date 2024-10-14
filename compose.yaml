@@ -2,9 +2,6 @@ services:
   kaggle:
     build:
       dockerfile: ./Dockerfile
-      args:
-        - UID=${UID}
-        - GID=${GID}
     restart: always
     tty: true
     volumes:
